@@ -1,4 +1,4 @@
-import { FaHome, FaUsers, FaUser, FaRegCircle } from "react-icons/fa"; // Import necessary icons
+import { FaHome, FaUsers, FaUser, FaRegCircle } from "react-icons/fa";
 import { RiCustomerService2Fill, RiBuilding2Fill } from "react-icons/ri";
 import { MdOutlineAddTask } from "react-icons/md";
 
@@ -8,14 +8,14 @@ const navigation = [
     to: "/management/dashboard",
     icon: FaHome,
     current: true,
-    roles: ["Admin", "Sale", "Developer", "Designer", "Employee", "Manager"],
+    roles: ["Admin", "ProjectManager", "TeamMember", "Client"],
   },
   {
     name: "Teams",
     to: "#",
     icon: FaUsers,
     current: false,
-    roles: ["Admin"],
+    roles: ["Admin", "TeamMember"],
     children: [
       {
         name: "Add Members",
@@ -31,31 +31,12 @@ const navigation = [
       },
     ],
   },
-  {
-    name: "Sales / Calling",
-    to: "#",
-    icon: RiCustomerService2Fill,
-    roles: ["Admin", "Sale"],
-    children: [
-      {
-        name: "Add Client Leads",
-        to: "/management/add-sales-leads",
-        roles: ["Admin", "Sale"],
-        icon: FaRegCircle,
-      },
-      {
-        name: "All Leads",
-        to: "/management/all-leads",
-        roles: ["Admin", "Sale"],
-        icon: FaRegCircle,
-      },
-    ],
-  },
+
   {
     name: "Projects",
     to: "#",
     icon: RiBuilding2Fill,
-    roles: ["Admin"],
+    roles: ["Admin", "TeamMember"],
     children: [
       {
         name: "Add Project",
@@ -81,7 +62,7 @@ const navigation = [
     name: "Task",
     to: "#",
     icon: MdOutlineAddTask,
-    roles: ["Admin"],
+    roles: ["Admin", "TeamMember"],
     children: [
       {
         name: "Assign Task",
