@@ -166,6 +166,9 @@ export const userActiveInactive = wrapAsyncUtil(async (req, res, next) => {
 
 export const allUsers = wrapAsyncUtil(async (req, res) => {
     const users = await User.find();
+    if (!users) {
+        res.status(404).json(new ApiResponse(404, null, "No users found"));
+    }
     res.status(200).json(new ApiResponse(200, users, "All users fetched"));
 });
 
