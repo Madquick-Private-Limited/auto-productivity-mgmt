@@ -9,7 +9,6 @@ const userValidationSchema = Joi.object({
         .default("TeamMember"),
     status: Joi.string().valid("active", "inactive").default("active"),
     phone: Joi.number().required(),
-    address: Joi.string().trim().required(),
     photo: Joi.string()
         .uri()
         .default(

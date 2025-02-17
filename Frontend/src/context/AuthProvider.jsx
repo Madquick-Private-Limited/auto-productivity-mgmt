@@ -14,14 +14,12 @@ export const AuthProvider = ({ children }) => {
     localStorage.getItem("refreshToken")
   );
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [isInactivityLogout, setIsInactivityLogout] = useState(false);
   const [userRole, setUserRole] = useState(() => {
     const token = localStorage.getItem("accessToken");
     return token ? jwtDecode(token).role : null;
   });
   const navigate = useNavigate();
 
-  let logoutTimer;
   let refreshTimer;
 
   useEffect(() => {
@@ -48,7 +46,7 @@ export const AuthProvider = ({ children }) => {
               decodedToken.exp * 1000 - Date.now(),
               savedRefreshToken
             );
-            startLogoutTimer();
+            startLogoutTimer(); // Call startLogoutTimer
           }
         } catch (error) {
           console.error("Error decoding token", error);
@@ -59,18 +57,6 @@ export const AuthProvider = ({ children }) => {
 
     initAuth(); // Call the init function on component mount
   }, []);
-
-  const startLogoutTimer = () => {
-    if (logoutTimer) {
-      clearTimeout(logoutTimer);
-    }
-    logoutTimer = setTimeout(() => {
-      if (!isLoggingOut && user) {
-        setIsInactivityLogout(true);
-        logout();
-      }
-    }, 5 * 60 * 1000); // Auto logout after 5 minutes of inactivity
-  };
 
   const refreshAccessToken = async (refreshToken) => {
     try {
@@ -105,6 +91,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = (accessToken, refreshToken) => {
+    console.log("Login function called");
+    console.log(accessToken, refreshToken);
     const loginTime = new Date().toISOString();
     localStorage.setItem("accessToken", accessToken);
     localStorage.setItem("refreshToken", refreshToken);
@@ -116,7 +104,7 @@ export const AuthProvider = ({ children }) => {
       setAccessToken(accessToken);
       setRefreshToken(refreshToken);
       setRefreshTimer(decodedUser.exp * 1000 - Date.now(), refreshToken);
-      startLogoutTimer();
+      startLogoutTimer(); // Start logout timer after login
       navigate("/management");
     } catch (error) {
       console.error("Error decoding token during login", error);
@@ -143,16 +131,21 @@ export const AuthProvider = ({ children }) => {
       setUserRole(null);
       setAccessToken(null);
       setRefreshToken(null);
-      if (isInactivityLogout) {
-        alert("You have been logged out due to inactivity.");
-        setIsInactivityLogout(false);
-      }
       navigate("/");
     } catch (error) {
       console.error("Error logging out:", error);
     } finally {
       setIsLoggingOut(false);
     }
+  };
+
+  // Start the auto logout timer
+  const startLogoutTimer = () => {
+    const logoutTime = 60 * 60 * 1000; // Auto logout after 1 hour (can be adjusted)
+
+    setTimeout(() => {
+      logout();
+    }, logoutTime);
   };
 
   return (

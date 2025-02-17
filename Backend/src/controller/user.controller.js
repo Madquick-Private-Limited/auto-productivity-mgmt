@@ -29,7 +29,10 @@ const generateAccessAndRefreshTokens = async (userId, next) => {
 };
 
 export const userRegister = wrapAsyncUtil(async (req, res) => {
+    console.log("started");
     const { error } = validateUser(req.body);
+
+    console.log("req.body", req.body);
 
     if (error) {
         throw new ApiError(400, error.details[0].message);
@@ -74,9 +77,6 @@ export const userLogin = wrapAsyncUtil(async (req, res, next) => {
     );
     user.refreshToken = refreshToken;
 
-    user.loginTimes.push(new Date());
-    await user.save({ validateBeforeSave: false });
-
     return res
         .status(200)
         .json(
@@ -90,6 +90,22 @@ export const userLogin = wrapAsyncUtil(async (req, res, next) => {
 
 export const userLogout = wrapAsyncUtil(async (req, res, next) => {
     const { userId } = req.body;
+
+    const user = await User.findById(userId).select(
+        "loginTimes logoutTimes workingHours refreshToken"
+    );
+
+    if (!user) {
+        res.status(404).json(new ApiResponse(404, null, "User not found"));
+    }
+
+    user.refreshToken = "";
+
+    await user.save({ validateBeforeSave: false });
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, null, "User logged out successfully"));
 });
 
 export const refreshAccessTokenUser = wrapAsyncUtil(async (req, res, next) => {

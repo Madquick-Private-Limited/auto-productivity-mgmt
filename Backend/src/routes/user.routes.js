@@ -15,12 +15,7 @@ import { authorizeRoles } from "../middleware/authorizeRoles.middleware.js";
 
 const router = express.Router();
 
-router.post(
-    "/user-regiter",
-    authenticateToken,
-    authorizeRoles("Admin"),
-    userRegister
-);
+router.post("/user-register", userRegister);
 router.post("/user-login", userLogin);
 router.post("/user-logout", userLogout);
 router.post("/user-refresh-token", refreshAccessTokenUser);

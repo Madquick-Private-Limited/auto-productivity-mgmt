@@ -1,9 +1,20 @@
-function App() {
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Layout from "./layouts/CombineLayout/Layout.jsx";
+import LoginPage from "./pages/Login/LoginPage.jsx";
+
+const App = () => {
+  const authToken = true;
+
   return (
-    <div className="bg-red-500">
-      <h1>Hello</h1>
-    </div>
+    <Routes>
+      <Route path="/" element={<LoginPage />} />
+      <Route
+        path="/management"
+        element={authToken ? <Layout /> : <Navigate to="/" />}
+      ></Route>
+    </Routes>
   );
-}
+};
 
 export default App;
