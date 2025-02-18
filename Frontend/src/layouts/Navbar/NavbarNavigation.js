@@ -8,14 +8,14 @@ const navigation = [
     to: "/management/dashboard",
     icon: FaHome,
     current: true,
-    roles: ["Admin", "ProjectManager", "TeamMember", "Client"],
+    roles: ["Admin", "ProjectManager", "Client"],
   },
   {
     name: "Teams",
     to: "#",
     icon: FaUsers,
     current: false,
-    roles: ["Admin", "TeamMember"],
+    roles: ["Admin", "ProjectManager"],
     children: [
       {
         name: "Add Members",
@@ -36,7 +36,7 @@ const navigation = [
     name: "Projects",
     to: "#",
     icon: RiBuilding2Fill,
-    roles: ["Admin", "TeamMember"],
+    roles: ["Admin", "ProjectManager"],
     children: [
       {
         name: "Add Project",
@@ -67,13 +67,13 @@ const navigation = [
       {
         name: "Assign Task",
         to: "/management/assign-task",
-        roles: ["Employee"],
+        roles: ["Admin", "ProjectManager"],
         icon: FaRegCircle,
       },
       {
         name: "View Task",
         to: "/management/view-tasks",
-        roles: ["Admin"],
+        roles: ["Admin", "ProjectManager", "TeamMember"],
         icon: FaRegCircle,
       },
     ],

@@ -12,6 +12,7 @@ import AssignTask from "./pages/Task/AssignTask.jsx";
 import ViewTasks from "./pages/Task/ViewTasks.jsx";
 import AdminDashboard from "./pages/Dashboard/AdminDashboard.jsx";
 import "react-toastify/dist/ReactToastify.css";
+import UserProfile from "./pages/Team/UserProfile.jsx";
 
 const App = () => {
   const authToken = true;
@@ -26,7 +27,7 @@ const App = () => {
         <Route
           path="add-team"
           element={
-            <RoleBasedAccess allowedRoles={["Admin", "TeamMember"]}>
+            <RoleBasedAccess allowedRoles={["Admin", "ProjectManager"]}>
               <AddTeamPage />
             </RoleBasedAccess>
           }
@@ -34,7 +35,7 @@ const App = () => {
         <Route
           path="view-team"
           element={
-            <RoleBasedAccess allowedRoles={["Admin", "TeamMember"]}>
+            <RoleBasedAccess allowedRoles={["Admin", "ProjectManager"]}>
               <ViewTeamMembers />{" "}
             </RoleBasedAccess>
           }
@@ -42,7 +43,7 @@ const App = () => {
         <Route
           path="view-projects"
           element={
-            <RoleBasedAccess allowedRoles={["Admin", "TeamMember"]}>
+            <RoleBasedAccess allowedRoles={["Admin", "ProjectManager"]}>
               <ProjectTable />{" "}
             </RoleBasedAccess>
           }
@@ -50,7 +51,7 @@ const App = () => {
         <Route
           path="add-projects"
           element={
-            <RoleBasedAccess allowedRoles={["Admin", "TeamMember"]}>
+            <RoleBasedAccess allowedRoles={["Admin", "ProjectManager"]}>
               <AddProject />{" "}
             </RoleBasedAccess>
           }
@@ -58,7 +59,7 @@ const App = () => {
         <Route
           path="assign-projects"
           element={
-            <RoleBasedAccess allowedRoles={["Admin", "TeamMember"]}>
+            <RoleBasedAccess allowedRoles={["Admin", "ProjectManager"]}>
               <AssingProject />{" "}
             </RoleBasedAccess>
           }
@@ -66,7 +67,7 @@ const App = () => {
         <Route
           path="assign-task"
           element={
-            <RoleBasedAccess allowedRoles={["Admin", "TeamMember"]}>
+            <RoleBasedAccess allowedRoles={["Admin", "ProjectManager"]}>
               <AssignTask />{" "}
             </RoleBasedAccess>
           }
@@ -74,15 +75,23 @@ const App = () => {
         <Route
           path="view-tasks"
           element={
-            <RoleBasedAccess allowedRoles={["Admin", "TeamMember"]}>
+            <RoleBasedAccess allowedRoles={["Admin", "ProjectManager","TeamMember"]}>
               <ViewTasks />{" "}
+            </RoleBasedAccess>
+          }
+        />
+        <Route
+          path="user-profile/:id"
+          element={
+            <RoleBasedAccess allowedRoles={["Admin", "TeamMember"]}>
+              <UserProfile />{" "}
             </RoleBasedAccess>
           }
         />
         <Route
           path="dashboard"
           element={
-            <RoleBasedAccess allowedRoles={["Admin", "TeamMember"]}>
+            <RoleBasedAccess allowedRoles={["Admin", "ProjectManager"]}>
               <AdminDashboard />{" "}
             </RoleBasedAccess>
           }

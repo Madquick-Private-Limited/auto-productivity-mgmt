@@ -63,6 +63,13 @@ const AssignTask = () => {
         payload
       );
       toast.success("Task assigned successfully");
+      setSelectedProjectId("");
+      setTeamMembers([]);
+      setSelectedEmployeeId("");
+      setTaskTitle("");
+      setTaskDescription("");
+      setTaskDueDate("");
+      setTaskPriority("");
     } catch (error) {
       console.error("Error assigning task:", error);
       toast.error("Failed to assign task");

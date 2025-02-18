@@ -46,12 +46,14 @@ const ViewTasks = () => {
 
   const handleTeamMemberChange = async (teamMemberId) => {
     setSelectedTeamMemberId(teamMemberId);
+    setTasks([]);
     try {
       const response = await axios.get(
         `${
           import.meta.env.VITE_BACKEND_URL
         }/api/get-task-by-userid/${teamMemberId}`
       );
+      console.log("Tasks:", response.data.data);
       if (response.data.success) {
         setTasks(response.data.data.tasks);
       }

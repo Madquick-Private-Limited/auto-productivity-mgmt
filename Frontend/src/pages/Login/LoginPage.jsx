@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
 
 function LoginPage() {
   const [formData, setFormData] = useState({
@@ -37,8 +38,17 @@ function LoginPage() {
 
       const { accessToken, refreshToken, user } = res.data.data;
       login(accessToken, refreshToken);
+
+      toast.success("Login successful!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     } catch (error) {
       console.error("There was an error logging in!", error);
+      toast.error(error.response?.data?.message || "Invalid credentials", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
   };
 
@@ -105,6 +115,7 @@ function LoginPage() {
           </p>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

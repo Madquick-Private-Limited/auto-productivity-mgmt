@@ -1,78 +1,116 @@
-import React, { useState } from 'react';
-import { FaUsers, FaProjectDiagram, FaTasks, FaChartPie, FaDollarSign, FaCog, FaClock, FaPhone, FaUserClock, FaBullhorn, FaChartLine, FaSearch, FaBell } from 'react-icons/fa';
-import { Bar, Line, Doughnut, Radar, Pie } from 'react-chartjs-2';
-import 'chart.js/auto';
+import React, { useEffect, useState } from "react";
+import {
+  FaUsers,
+  FaProjectDiagram,
+  FaTasks,
+  FaChartPie,
+  FaDollarSign,
+  FaCog,
+  FaClock,
+  FaPhone,
+  FaUserClock,
+  FaBullhorn,
+  FaChartLine,
+  FaSearch,
+  FaBell,
+} from "react-icons/fa";
+import { Bar, Line, Doughnut, Radar, Pie } from "react-chartjs-2";
+import "chart.js/auto";
+import axios from "axios";
 
 const AdminDashboard = () => {
-  // Sample data for charts
+  const [dashboardData, setDashboardData] = useState({
+    projectCount: 0,
+    userCount: 0,
+    taskCount: 0,
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/dashboard-data`
+        );
+        console.log("Dashboard Data:", response.data);
+        if (response.data.success) {
+          setDashboardData(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const userData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
       {
-        label: 'New Users',
+        label: "New Users",
         data: [50, 100, 150, 200, 250, 300],
-        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
+        borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
       },
     ],
   };
 
   const projectData = {
-    labels: ['Completed', 'In Progress', 'On Hold'],
+    labels: ["Completed", "In Progress", "On Hold"],
     datasets: [
       {
-        label: 'Projects',
+        label: "Projects",
         data: [10, 15, 5],
-        backgroundColor: ['#4caf50', '#ff9800', '#f44336'],
+        backgroundColor: ["#4caf50", "#ff9800", "#f44336"],
       },
     ],
   };
 
   const workingHoursData = {
-    labels: ['Employee A', 'Employee B', 'Employee C', 'Employee D'],
+    labels: ["Employee A", "Employee B", "Employee C", "Employee D"],
     datasets: [
       {
-        label: 'Working Hours',
+        label: "Working Hours",
         data: [35, 40, 25, 30],
-        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: "rgba(54, 162, 235, 0.6)",
+        borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
       },
     ],
   };
 
   const leadsData = {
-    labels: ['Call Leads', 'Follow-up', 'Closed'],
+    labels: ["Call Leads", "Follow-up", "Closed"],
     datasets: [
       {
-        label: 'Leads Status',
+        label: "Leads Status",
         data: [30, 20, 15],
-        backgroundColor: ['#36a2eb', '#ffcd56', '#ff6384'],
+        backgroundColor: ["#36a2eb", "#ffcd56", "#ff6384"],
       },
     ],
   };
 
   const productivityData = {
-    labels: ['Employee A', 'Employee B', 'Employee C', 'Employee D'],
+    labels: ["Employee A", "Employee B", "Employee C", "Employee D"],
     datasets: [
       {
-        label: 'Productivity Score',
+        label: "Productivity Score",
         data: [80, 90, 75, 85],
-        backgroundColor: 'rgba(255, 99, 132, 0.6)',
-        borderColor: 'rgba(255, 99, 132, 1)',
+        backgroundColor: "rgba(255, 99, 132, 0.6)",
+        borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 1,
       },
     ],
   };
 
   const revenueData = {
-    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+    labels: ["Q1", "Q2", "Q3", "Q4"],
     datasets: [
       {
-        label: 'Revenue',
+        label: "Revenue",
         data: [15000, 20000, 25000, 30000],
-        backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56'],
+        backgroundColor: ["#ff6384", "#36a2eb", "#cc65fe", "#ffce56"],
       },
     ],
   };
@@ -82,7 +120,7 @@ const AdminDashboard = () => {
     "Project XYZ is overdue",
     "Employee A completed task ABC",
     "System maintenance scheduled for tomorrow",
-    "New lead added to the CRM"
+    "New lead added to the CRM",
   ]);
 
   const [showNotifications, setShowNotifications] = useState(false);
@@ -113,8 +151,12 @@ const AdminDashboard = () => {
             <FaUsers className="text-5xl text-pink-500 mr-6" />
             <h2 className="text-3xl font-bold">Users</h2>
           </div>
-          <p className="text-gray-700">Manage user accounts, roles, and permissions.</p>
-          <p className="mt-4 text-gray-900 font-semibold">Total Users: 1,200</p>
+          <p className="text-gray-700">
+            Manage user accounts, roles, and permissions.
+          </p>
+          <p className="mt-4 text-gray-900 font-semibold">
+            Total Users: {dashboardData.userCount}
+          </p>
         </div>
 
         {/* Projects Card */}
@@ -123,8 +165,12 @@ const AdminDashboard = () => {
             <FaProjectDiagram className="text-5xl text-purple-500 mr-6" />
             <h2 className="text-3xl font-bold">Projects</h2>
           </div>
-          <p className="text-gray-700">View, create, and manage ongoing projects.</p>
-          <p className="mt-4 text-gray-900 font-semibold">Ongoing Projects: 25</p>
+          <p className="text-gray-700">
+            View, create, and manage ongoing projects.
+          </p>
+          <p className="mt-4 text-gray-900 font-semibold">
+            Ongoing Projects: {dashboardData.projectCount}
+          </p>
         </div>
 
         {/* Tasks Card */}
@@ -133,8 +179,12 @@ const AdminDashboard = () => {
             <FaTasks className="text-5xl text-green-500 mr-6" />
             <h2 className="text-3xl font-bold">Tasks</h2>
           </div>
-          <p className="text-gray-700">Assign tasks, track progress, and update status.</p>
-          <p className="mt-4 text-gray-900 font-semibold">Pending Tasks: 45</p>
+          <p className="text-gray-700">
+            Assign tasks, track progress, and update status.
+          </p>
+          <p className="mt-4 text-gray-900 font-semibold">
+            Pending Tasks: {dashboardData.taskCount}
+          </p>
         </div>
 
         {/* Working Hours Card */}
@@ -143,8 +193,12 @@ const AdminDashboard = () => {
             <FaUserClock className="text-5xl text-blue-500 mr-6" />
             <h2 className="text-3xl font-bold">Working Hours</h2>
           </div>
-          <p className="text-gray-700">Monitor employee working hours and productivity.</p>
-          <p className="mt-4 text-gray-900 font-semibold">Average Hours: 35/week</p>
+          <p className="text-gray-700">
+            Monitor employee working hours and productivity.
+          </p>
+          <p className="mt-4 text-gray-900 font-semibold">
+            Average Hours: 35/week
+          </p>
         </div>
       </div>
 
@@ -159,14 +213,14 @@ const AdminDashboard = () => {
 
         {/* Project Status Chart */}
         <div className="bg-white p-8 rounded-xl shadow-lg">
-          <h3 className="text-2xl font-bold text-gray-800 mb-6">Project Status Overview</h3>
+          <h3 className="text-2xl font-bold text-gray-800 mb-6">
+            Project Status Overview
+          </h3>
           <div className="relative h-64">
             <Bar data={projectData} options={{ maintainAspectRatio: true }} />
           </div>
         </div>
       </div>
-
-      
     </div>
   );
 };

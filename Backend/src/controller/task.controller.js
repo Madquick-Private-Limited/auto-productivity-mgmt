@@ -4,6 +4,7 @@ import { Task } from "../model/task.model.js";
 import { User } from "../model/user.model.js";
 import { ApiResponse } from "../util/responseHandler.js";
 import wrapAsyncUtil from "../util/wrapAsync.util.js";
+import { io } from "../index.js";
 
 export const getTeamMemberByProjectId = wrapAsyncUtil(
     async (req, res, next) => {
@@ -67,6 +68,14 @@ export const createTask = wrapAsyncUtil(async (req, res, next) => {
     });
 
     await task.save();
+
+    console.log(`sending to room: ${assignedTo}`);
+    io.to(assignedTo.toString()).emit("newTask", {
+        message: `New task assigned: ${title}`,
+        task,
+    });
+
+    console.log(`Notification sent to ${task._id}`);
 
     return res
         .status(201)
