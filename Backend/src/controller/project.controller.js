@@ -1,9 +1,12 @@
 import { ApiResponse } from "../util/responseHandler.js";
 import wrapAsyncUtil from "../util/wrapAsync.util.js";
 import { Project } from "../model/project.model.js";
+import {User} from "../model/user.model.js";
 
 export const createProject = wrapAsyncUtil(async (req, res) => {
     const managerId = req.user?.id;
+
+    console.log(managerId);
 
     if (!managerId) {
         return res
@@ -12,6 +15,7 @@ export const createProject = wrapAsyncUtil(async (req, res) => {
     }
 
     const { name, description, startDate, endDate } = req.body;
+    console.log(req.body);
 
     if (!name || !startDate || !endDate) {
         return res
