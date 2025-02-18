@@ -12,6 +12,7 @@ import {
 } from "../controller/user.controller.js";
 import { authenticateToken } from "../middleware/authenticateToken.middleware.js";
 import { authorizeRoles } from "../middleware/authorizeRoles.middleware.js";
+import { getAllProjectUserAndTask } from "../controller/project.controller.js";
 
 const router = express.Router();
 
@@ -24,5 +25,6 @@ router.get("/single-user/:userId", singleUser);
 router.put("/update-user/:userId", userUpdate);
 router.delete("/delete-user/:userId", userDelete);
 router.put("/change-user-password/:userId", changeUserPassword);
+router.get("/dashboard-data", getAllProjectUserAndTask);
 
 export { router as userRouter };

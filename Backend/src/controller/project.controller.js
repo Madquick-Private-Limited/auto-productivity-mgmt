@@ -1,7 +1,7 @@
 import { ApiResponse } from "../util/responseHandler.js";
 import wrapAsyncUtil from "../util/wrapAsync.util.js";
 import { Project } from "../model/project.model.js";
-import {User} from "../model/user.model.js";
+import { User } from "../model/user.model.js";
 
 export const createProject = wrapAsyncUtil(async (req, res) => {
     const managerId = req.user?.id;
@@ -293,5 +293,30 @@ export const getFreeUsers = wrapAsyncUtil(async (req, res) => {
         .status(200)
         .json(
             new ApiResponse(200, freeUsers, "Free users retrieved successfully")
+        );
+});
+
+export const getAllProjectUserAndTask = wrapAsyncUtil(async (req, res) => {
+    const projects = await Project.find()
+        .populate({ path: "team tasks", strictPopulate: false })
+        .lean();
+    const users = await User.find().lean();
+    const tasks = projects.reduce(
+        (acc, project) => acc.concat(project.tasks),
+        []
+    );
+
+    const projectCount = projects.length;
+    const userCount = users.length;
+    const taskCount = tasks.length;
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                { projectCount, userCount, taskCount },
+                "Counts retrieved successfully"
+            )
         );
 });
