@@ -1,143 +1,95 @@
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import { FiMoon, FiSun } from "react-icons/fi";
+import { MdNotifications } from "react-icons/md";
+import { CgNotes } from "react-icons/cg";
+import { useDarkMode } from "../../context/DarkModeContext";
 
 const TopNavbar = ({ isCollapsed, setIsCollapsed }) => {
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
   const { logout } = useAuth();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  // Toggle the dropdown when clicking on the profile image
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+
   return (
-    <nav
-      className={`fixed top-0 transition-all duration-300 overflow-hidden ${
-        isCollapsed ? "left-16 mx-2 mt-2" : "left-64 ml-2 mt-2"
-      } w-full flex flex-wrap text-lg items-center justify-between bg-gradient-to-tl from-orange-200 to-indigo-200 py-2 shadow-md dark:bg-neutral-700`}
-      style={{
-        width: `calc(100% - ${isCollapsed ? "80px" : "272px"})`,
-      }}
-    >
-      <div className="flex w-full items-center justify-between px-3">
-        {/* Hamburger button for mobile view */}
-        <button
-          className="lg:hidden text-black/50 dark:text-neutral-200"
-          type="button"
-          aria-controls="navbarSupportedContent1"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-          onClick={() => setIsCollapsed((prev) => !prev)} // Toggle the collapse state
-        >
-          <span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-7"
-            >
-              <path
-                fillRule="evenodd"
-                d="M3 6.75A.75.75 0 013.75 6h16.5a.75.75 0 010 1.5H3.75A.75.75 0 013 6.75zM3 12a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75A.75.75 0 013 12zm0 5.25a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75a.75.75 0 01-.75-.75z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </span>
-        </button>
+    <header className="dark:bg-gray-900 bg-gradient-to-tl from-orange-200 to-indigo-200 dark:border-[#552d44] dark:border-2 mx-3 my-2 text-white py-2 shadow-sm">
+      <div className="mx-auto flex justify-between items-center px-4">
+        <h1 className="text-2xl dark:text-pink-600 flex justify-center items-center gap-2 text-purple-600 font-bold">
+          <CgNotes />
+          Auto Productivity Management
+        </h1>
 
-        {/* Collapsible container */}
-        <div className="hidden lg:flex items-center">
-          {/* Logo */}
-          <a
-            className="flex items-center text-neutral-900 dark:text-neutral-200"
-            href="#"
+        {/* Right Section - Profile and Actions */}
+        <div className="flex dark:text-gray-200 text-gray-800 items-center gap-4">
+          <button
+            type="button"
+            className="relative p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none"
+            title="Notifications"
           >
-            <img
-              src="https://tecdn.b-cdn.net/img/logo/te-transparent-noshadows.webp"
-              style={{ height: "15px" }}
-              alt="Logo"
-            />
-          </a>
+            <MdNotifications size={24} />
+            {/* You can add a badge here if needed */}
+          </button>
 
-          {/* Links */}
-          <ul className="ml-5 flex space-x-4 text-black/60 dark:text-white/60">
-            <li>
-              <a
-                href="#"
-                className="hover:text-black/80 dark:hover:text-white/80"
-              >
-                Dashboard
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="hover:text-black/80 dark:hover:text-white/80"
-              >
-                Team
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="hover:text-black/80 dark:hover:text-white/80"
-                onClick={() => logout()}
-              >
-                Logout
-              </a>
-            </li>
-          </ul>
-        </div>
+          <button
+            type="button"
+            onClick={toggleDarkMode}
+            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none"
+            title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          >
+            {isDarkMode ? <FiSun size={24} /> : <FiMoon size={24} />}
+          </button>
 
-        {/* Right elements */}
-        <div className="flex items-center space-x-4">
-          {/* User profile dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setIsDropdownOpen((prev) => !prev)}
-              className="flex items-center focus:outline-none"
-            >
+          <div className="flex text-right items-center gap-1">
+            <div className="hidden sm:flex border-r border-gray-600 pr-2 flex-col text-sm">
+              <span className="font-semibold text-md">Hemant Medhsia</span>
+              <span className="text-gray-400 text-xs">
+                hemantmedhsia@gmail.com
+              </span>
+            </div>
+
+            {/* Profile Picture */}
+            <div className="relative">
               <img
-                src="https://tecdn.b-cdn.net/img/new/avatars/2.jpg"
-                alt="User"
-                className="rounded-full w-10 h-10"
+                src="https://d2qp0siotla746.cloudfront.net/img/use-cases/profile-picture/template_0.jpg"
+                alt="Profile"
+                className="w-11 h-11 rounded-full object-cover cursor-pointer"
+                onClick={toggleDropdown}
               />
-            </button>
-            {/* Dropdown menu */}
-            {isDropdownOpen && (
-              <ul className="absolute mt-2 right-0 w-48 bg-white shadow-lg rounded-lg dark:bg-gray-800">
-                <li>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 dark:text-white dark:hover:bg-gray-600"
-                  >
-                    Profile
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 dark:text-white dark:hover:bg-gray-600"
-                  >
-                    Settings
-                  </a>
-                </li>
-                <li>
-                  <button
-                    onClick={() => {
-                      logout();
-                      setIsDropdownOpen(false);
 
-                      navigate("/");
-                    }}
-                    className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 dark:text-white dark:hover:bg-gray-600"
-                  >
-                    Logout
-                  </button>
-                </li>
-              </ul>
-            )}
+              {isDropdownOpen && (
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 shadow-lg rounded-md z-50 border border-gray-300 dark:border-gray-700">
+                  <ul>
+                    <li>
+                      <button
+                        onClick={() => navigate("/profile")}
+                        className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left"
+                      >
+                        Profile
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={logout}
+                        className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left"
+                      >
+                        Logout
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </nav>
+    </header>
   );
 };
 

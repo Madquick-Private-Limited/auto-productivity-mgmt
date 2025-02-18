@@ -10,6 +10,8 @@ import AddProject from "./pages/Project/AddProject.jsx";
 import AssingProject from "./pages/Project/AssingProject.jsx";
 import AssignTask from "./pages/Task/AssignTask.jsx";
 import ViewTasks from "./pages/Task/ViewTasks.jsx";
+import AdminDashboard from "./pages/Dashboard/AdminDashboard.jsx";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   const authToken = true;
@@ -74,6 +76,14 @@ const App = () => {
           element={
             <RoleBasedAccess allowedRoles={["Admin", "TeamMember"]}>
               <ViewTasks />{" "}
+            </RoleBasedAccess>
+          }
+        />
+        <Route
+          path="dashboard"
+          element={
+            <RoleBasedAccess allowedRoles={["Admin", "TeamMember"]}>
+              <AdminDashboard />{" "}
             </RoleBasedAccess>
           }
         />

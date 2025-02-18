@@ -29,7 +29,7 @@ const Layout = () => {
         }}
       >
         <TopNavbar isCollapsed={isCollapsed} />
-        <div className="flex-1 overflow-y-auto mt-20 mx-2">
+        <div className="flex-1 overflow-y-auto mt-2 mx-2">
           <Outlet />
         </div>
       </div>
