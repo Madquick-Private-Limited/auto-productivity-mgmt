@@ -19,7 +19,7 @@ router.post("/user-register", userRegister);
 router.post("/user-login", userLogin);
 router.post("/user-logout", userLogout);
 router.post("/user-refresh-token", refreshAccessTokenUser);
-router.get("/all-users", authenticateToken, authorizeRoles("Admin"), allUsers);
+router.get("/all-users", authenticateToken, allUsers);
 router.get("/single-user/:userId", singleUser);
 router.put("/update-user/:userId", userUpdate);
 router.delete("/delete-user/:userId", userDelete);

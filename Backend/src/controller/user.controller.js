@@ -32,11 +32,20 @@ export const userRegister = wrapAsyncUtil(async (req, res) => {
     console.log("started");
     const { error } = validateUser(req.body);
 
-    console.log("req.body", req.body);
-
     if (error) {
         throw new ApiError(400, error.details[0].message);
     }
+
+    const emailExists = await User.findOne({ email: req.body.email }).select(
+        "email"
+    );
+
+    if (emailExists) {
+        return res
+            .status(400)
+            .json(new ApiResponse(400, null, "Email already exists"));
+    }
+
     const user = await User.create(req.body);
     res.status(201).json(
         new ApiResponse(201, user, "User created successfully")

@@ -11,8 +11,10 @@ export default function UserForm() {
     reset,
     formState: { errors },
   } = useForm();
+  const [loading, setLoading] = React.useState(false);
 
   const onSubmit = async (data) => {
+    setLoading(true);
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/user-register`,
@@ -22,8 +24,13 @@ export default function UserForm() {
       toast.success("User added successfully!");
       reset();
     } catch (error) {
-      console.error("Error submitting form:", error);
-      toast.error("Error adding user. Please try again.");
+      if (error.response && error.response.status === 400) {
+        toast(error.response.data.message);
+      } else {
+        toast("An error occurred. Please try again later.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -35,7 +42,6 @@ export default function UserForm() {
     >
       <h1 className="text-2xl font-semibold text-gray-800 mb-6">Add User</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* First Row: Name and Email */}
         <div className="grid grid-cols-2 gap-6">
           <FormField
             label="Name"
@@ -55,7 +61,6 @@ export default function UserForm() {
           />
         </div>
 
-        {/* Second Row: Password and Phone */}
         <div className="grid grid-cols-2 gap-6">
           <FormField
             label="Password"
@@ -80,7 +85,6 @@ export default function UserForm() {
           />
         </div>
 
-        {/* Third Row: Photo URL and Role */}
         <div className="grid grid-cols-2 gap-6">
           <FormField
             label="Photo URL"
@@ -104,7 +108,6 @@ export default function UserForm() {
           />
         </div>
 
-        {/* Fourth Row: Status */}
         <FormField
           label="Status"
           name="status"
@@ -119,9 +122,10 @@ export default function UserForm() {
 
         <button
           type="submit"
+          disabled={loading}
           className="px-10 ml-4 ml-auto block mt-10 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-full transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
         >
-          Submit
+          {loading ? "Loading..." : "Add User"}
         </button>
       </form>
       <ToastContainer />
