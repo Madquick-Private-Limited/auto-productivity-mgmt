@@ -129,26 +129,31 @@ const ProjectTable = () => {
     }
   };
 
-  // const handleViewClick = async (project) => {
-  //   setSelectedProject(project);
-  //   setShowViewModal(true);
-  //   setLoading(true);
-  //   try {
-  //     const response = await axios.get(
-  //       `${import.meta.env.VITE_BACKEND_URL}/api/get-team-member/${project._id}`
-  //     );
-  //     setTeamMembers(response.data.data);
-  //     const freeEmployeeResponse = await axios.get(
-  //       `${import.meta.env.VITE_BACKEND_URL}/api/all-users`
-  //     );
-  //     setFreeEmployees(freeEmployeeResponse.data);
-  //   } catch (error) {
-  //     console.error("Error fetching team members:", error);
-  //     toast.error("Failed to fetch team members");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  const handleViewClick = async (project) => {
+    setSelectedProject(project);
+    setShowViewModal(true);
+    setLoading(true);
+    console.log("Selected Project:", project);
+
+    try {
+      console.log("started");
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/get-team-member/${project._id}`
+      );
+      setTeamMembers(response.data.data);
+      console.log("Team Members:", response.data.data);
+      const freeEmployeeResponse = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/free-employee`
+      );
+      console.log("Free Employees:", freeEmployeeResponse.data.data);
+      setFreeEmployees(freeEmployeeResponse.data.data);
+    } catch (error) {
+      console.error("Error fetching team members:", error);
+      toast.error("Failed to fetch team members");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const refreshTeamMembers = async () => {
     try {
@@ -161,7 +166,7 @@ const ProjectTable = () => {
       const freeEmployeeResponse = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/api/free-employee`
       );
-      setFreeEmployees(freeEmployeeResponse.data.statusCode.data);
+      setFreeEmployees(freeEmployeeResponse.data.data);
     } catch (error) {
       console.error("Error refreshing team members:", error);
       toast.error("Failed to refresh team members");
@@ -324,12 +329,12 @@ const ProjectTable = () => {
                 >
                   <FaTrash size={18} />
                 </button>
-                {/* <button
+                <button
                   className="text-green-600 hover:text-green-800 transition duration-200"
                   onClick={() => handleViewClick(project)}
                 >
                   <FaEye size={18} />
-                </button> */}
+                </button>
               </td>
             </tr>
           ))}
@@ -424,7 +429,7 @@ const ProjectTable = () => {
             </ul>
             <div className="mb-4">
               <h3 className="font-semibold mb-2">Add Team Members:</h3>
-              {freeEmployees.map((employee) => (
+              {freeEmployees?.map((employee) => (
                 <div key={employee._id} className="flex items-center mb-2">
                   <input
                     type="checkbox"

@@ -20,8 +20,8 @@ const AssignProject = () => {
             import.meta.env.VITE_BACKEND_URL
           }/api/get-project-bystatus/not started`
         );
-        if (response.data.statusCode.success) {
-          setProjects(response.data.statusCode.data);
+        if (response.data && response.data.data) {
+          setProjects(response.data.data);
         }
       } catch (error) {
         console.error("Error fetching projects:", error);
@@ -32,10 +32,16 @@ const AssignProject = () => {
     const fetchEmployees = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/free-employee`
+          `${import.meta.env.VITE_BACKEND_URL}/api/all-users`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
         );
-        if (response.data.statusCode.success) {
-          setEmployees(response.data.statusCode.data);
+        console.log("Employees:", response.data);
+        if (response.data && response.data.data) {
+          setEmployees(response.data.data);
         }
       } catch (error) {
         console.error("Error fetching employees:", error);
@@ -142,13 +148,13 @@ const AssignProject = () => {
           </div>
         </div>
         {/* Team Name */}
-        <InputGroup
+        {/* <InputGroup
           label="Team Name"
           name="teamName"
           value={formData.teamName}
           onChange={handleInputChange}
           type="text"
-        />
+        /> */}
         {/* Submit Button */}
         <button
           type="submit"
