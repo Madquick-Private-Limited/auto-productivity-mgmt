@@ -1,29 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Bar } from "react-chartjs-2";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
 import TeamMembersTable from "../../common/Datatable/TeamMembersTable";
 import Modal from "../../common/Modal/Modal";
 import UserForm from "../../components/UserForm";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+import { toast, ToastContainer } from "react-toastify";
 
 const ViewTeamMembers = () => {
   const [users, setUsers] = useState([]);
@@ -49,10 +30,9 @@ const ViewTeamMembers = () => {
   };
 
   const handleFormSubmit = (updatedUser) => {
-    const updatedUsers = users?.map((user) =>
+    const updatedUsers = users.map((user) =>
       user._id === updatedUser._id ? updatedUser : user
     );
-    console.log("Updated user data:", updatedUser);
     setUsers(updatedUsers);
     setIsEditing(false);
   };
@@ -68,9 +48,7 @@ const ViewTeamMembers = () => {
           },
         }
       );
-
       const userData = response.data.data;
-      console.log("User data:", userData);
       setSelectedUser(userData);
       setShowModal(true);
     } catch (error) {
@@ -91,9 +69,19 @@ const ViewTeamMembers = () => {
         }
       );
       setUsers(users.filter((u) => u._id !== user._id));
+      toast.success("User deleted successfully!");
     } catch (error) {
       console.error("Error deleting user:", error);
+      toast.error("Failed to delete user!");
     }
+  };
+
+  const onSubmitSuccess = (updatedUser) => {
+    const updatedUsers = users.map((user) =>
+      user._id === updatedUser._id ? updatedUser : user
+    );
+    setUsers(updatedUsers);
+    setIsEditing(false);
   };
 
   return (
@@ -107,38 +95,46 @@ const ViewTeamMembers = () => {
           onDeleteClick={handleDeleteClick}
         />
       ) : (
-        <UserForm initialData={selectedUser} onSubmit={handleFormSubmit} />
+        <UserForm
+          initialData={selectedUser}
+          onSubmit={handleFormSubmit}
+          onSubmitSuccess={onSubmitSuccess}
+        />
       )}
 
       {showModal && selectedUser && !loading ? (
         <Modal
           onClose={() => setShowModal(false)}
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
+          className="fixed inset-0 flex items-center justify-center z-50 bg-black/50"
         >
           <div
-            className="relative w-full max-w-lg mx-auto p-6 bg-white rounded-lg shadow-xl transition-all transform-gpu duration-300 ease-out overflow-y-auto"
+            className="relative w-full max-w-lg mx-auto p-6 bg-white rounded-2xl shadow-2xl transition-all transform-gpu duration-300 ease-out overflow-y-auto"
             style={{ maxHeight: "80vh" }}
           >
-            {/* Close button */}
+            {/* Close Button */}
             <button
               onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 text-gray-700 hover:text-gray-900 transition-colors duration-200 ease-in-out"
+              className="absolute top-4 right-4 flex items-center justify-center w-16 h-8 rounded-full bg-red-500 hover:bg-red-600 active:bg-red-700 shadow-lg transition-all duration-200 ease-in-out"
             >
-              <span className="material-icons text-2xl">close</span>
+              <span className="material-icons text-white text-lg">close</span>
             </button>
 
-            <h2 className="text-3xl font-bold mb-6 text-center text-[#2d3748]">
+            <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
               User Details
             </h2>
+
+            {/* Profile Image */}
             <div className="flex justify-center mb-6">
               <img
                 src={selectedUser.photo || "https://via.placeholder.com/150"}
                 alt="Profile"
-                className="w-32 h-32 rounded-full object-cover shadow-2xl transition-transform transform hover:scale-105"
+                className="w-32 h-32 rounded-full object-cover shadow-xl transition-transform transform hover:scale-110"
               />
             </div>
+
+            {/* User Information */}
             <div className="grid grid-cols-1 gap-6">
-              <div className="bg-gradient-to-br from-[#4c51bf] to-[#4299e1] text-white p-6 rounded-lg shadow-lg transition duration-300 hover:shadow-xl">
+              <div className="bg-gradient-to-br from-indigo-600 to-blue-500 text-white p-6 rounded-lg shadow-xl transition duration-300 hover:shadow-2xl">
                 <h3 className="font-semibold text-xl mb-4 flex items-center gap-2">
                   Personal Information
                 </h3>
@@ -167,8 +163,11 @@ const ViewTeamMembers = () => {
           </div>
         </Modal>
       ) : loading ? (
-        <div>Loading...</div>
+        <div className="flex justify-center items-center h-32 text-lg font-semibold text-gray-700">
+          Loading...
+        </div>
       ) : null}
+      <ToastContainer />
     </div>
   );
 };

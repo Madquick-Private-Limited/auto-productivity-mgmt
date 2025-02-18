@@ -1,46 +1,86 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import FormField from "../common/FormField";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-export default function UserForm() {
+export default function UserForm({ initialData, onSubmitSuccess }) {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (initialData) {
+      reset(initialData);
+    }
+  }, [initialData, reset]);
 
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/user-register`,
-        data
-      );
-      console.log("Form Submitted:", data);
-      toast.success("User added successfully!");
+      let response;
+      if (initialData) {
+        response = await axios.put(
+          `${import.meta.env.VITE_BACKEND_URL}/api/update-user/${
+            initialData._id
+          }`,
+          data
+        );
+      } else {
+        response = await axios.post(
+          `${import.meta.env.VITE_BACKEND_URL}/api/user-register`,
+          data
+        );
+      }
+
+      if (response.status === 200 || response.status === 201) {
+        toast.success(
+          initialData
+            ? "User updated successfully!"
+            : "User added successfully!"
+        );
+
+        // Call onSubmitSuccess only when editing an existing user
+        if (initialData && onSubmitSuccess) {
+          onSubmitSuccess(response.data); // Pass the updated user data
+        }
+
+        navigate("/management/view-team");
+      } else {
+        throw new Error("Unexpected response from the server");
+      }
+
       reset();
     } catch (error) {
-      if (error.response && error.response.status === 400) {
-        toast(error.response.data.message);
+      console.error("API Error:", error);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        toast.error(error.response.data.message);
       } else {
-        toast("An error occurred. Please try again later.");
+        toast.error("An error occurred. Please try again later.");
       }
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <div
-      className="max-w-5xl mx-auto mt-10 p-6  rounded-lg shadow-lg "
-      style={{
-        background: "linear-gradient(135deg, #f29f67, #e6e1ff)",
-      }}
+      className="max-w-5xl mx-auto mt-10 p-6 rounded-lg shadow-lg"
+      style={{ background: "linear-gradient(135deg, #f29f67, #e6e1ff)" }}
     >
-      <h1 className="text-2xl font-semibold text-gray-800 mb-6">Add User</h1>
+      <h1 className="text-2xl font-semibold text-gray-800 mb-6">
+        {initialData ? "Edit User" : "Add User"}
+      </h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-2 gap-6">
           <FormField
@@ -62,16 +102,18 @@ export default function UserForm() {
         </div>
 
         <div className="grid grid-cols-2 gap-6">
-          <FormField
-            label="Password"
-            name="password"
-            type="password"
-            {...register("password", {
-              required: "Password is required",
-              minLength: { value: 6, message: "Min 6 characters required" },
-            })}
-            error={errors.password}
-          />
+          {!initialData && (
+            <FormField
+              label="Password"
+              name="password"
+              type="password"
+              {...register("password", {
+                required: "Password is required",
+                minLength: { value: 6, message: "Min 6 characters required" },
+              })}
+              error={errors.password}
+            />
+          )}
           <FormField
             label="Phone"
             name="phone"
@@ -123,9 +165,9 @@ export default function UserForm() {
         <button
           type="submit"
           disabled={loading}
-          className="px-10 ml-4 ml-auto block mt-10 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-full transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
+          className="px-10 ml-auto block mt-10 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-full transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
         >
-          {loading ? "Loading..." : "Add User"}
+          {loading ? "Loading..." : initialData ? "Update User" : "Add User"}
         </button>
       </form>
       <ToastContainer />
