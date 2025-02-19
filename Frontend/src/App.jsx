@@ -13,6 +13,7 @@ import ViewTasks from "./pages/Task/ViewTasks.jsx";
 import AdminDashboard from "./pages/Dashboard/AdminDashboard.jsx";
 import "react-toastify/dist/ReactToastify.css";
 import UserProfile from "./pages/Team/UserProfile.jsx";
+import NotFoundPage from "./pages/Login/NotFoundPage.jsx";
 
 const App = () => {
   const authToken = true;
@@ -75,7 +76,9 @@ const App = () => {
         <Route
           path="view-tasks"
           element={
-            <RoleBasedAccess allowedRoles={["Admin", "ProjectManager","TeamMember"]}>
+            <RoleBasedAccess
+              allowedRoles={["Admin", "ProjectManager", "TeamMember"]}
+            >
               <ViewTasks />{" "}
             </RoleBasedAccess>
           }
@@ -97,6 +100,7 @@ const App = () => {
           }
         />
       </Route>
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 };

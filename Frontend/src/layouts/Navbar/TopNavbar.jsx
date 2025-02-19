@@ -6,6 +6,9 @@ import { CgNotes } from "react-icons/cg";
 import { useDarkMode } from "../../context/DarkModeContext";
 import io from "socket.io-client";
 import { MdNotifications } from "react-icons/md";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { BsCalendar } from "react-icons/bs";
 
 const socket = io("http://localhost:8080");
 
@@ -18,9 +21,13 @@ const TopNavbar = ({ isCollapsed, setIsCollapsed }) => {
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const notifRef = useRef(null);
   const profileRef = useRef(null);
+  const calendarRef = useRef(null);
+
   useEffect(() => {
     console.log("👤 User Data:", user);
 
@@ -46,10 +53,13 @@ const TopNavbar = ({ isCollapsed, setIsCollapsed }) => {
         notifRef.current &&
         !notifRef.current.contains(event.target) &&
         profileRef.current &&
-        !profileRef.current.contains(event.target)
+        !profileRef.current.contains(event.target) &&
+        calendarRef.current &&
+        !calendarRef.current.contains(event.target)
       ) {
         setIsNotifOpen(false);
         setIsProfileOpen(false);
+        setIsCalendarOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -72,7 +82,7 @@ const TopNavbar = ({ isCollapsed, setIsCollapsed }) => {
               className="relative p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none"
               onClick={() => {
                 setIsNotifOpen(!isNotifOpen);
-                setIsProfileOpen(false); // ✅ Close profile dropdown
+                setIsProfileOpen(false);
               }}
             >
               <MdNotifications size={24} />
@@ -93,7 +103,7 @@ const TopNavbar = ({ isCollapsed, setIsCollapsed }) => {
                         key={index}
                         onClick={() => {
                           navigate(`/tasks/${notif.taskId}`);
-                          setIsNotifOpen(false); // ✅ Close dropdown on click
+                          setIsNotifOpen(false);
                         }}
                         className="px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 border-b last:border-0 cursor-pointer"
                       >
@@ -135,7 +145,7 @@ const TopNavbar = ({ isCollapsed, setIsCollapsed }) => {
               className="w-11 h-11 rounded-full object-cover cursor-pointer"
               onClick={() => {
                 setIsProfileOpen(!isProfileOpen);
-                setIsNotifOpen(false); // ✅ Close notifications dropdown
+                setIsNotifOpen(false);
               }}
             />
 
@@ -147,7 +157,7 @@ const TopNavbar = ({ isCollapsed, setIsCollapsed }) => {
                     <button
                       onClick={() => {
                         navigate(`/management/user-profile/${user.id}`);
-                        setIsProfileOpen(false); // ✅ Close dropdown on click
+                        setIsProfileOpen(false);
                       }}
                       className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left"
                     >
@@ -163,6 +173,27 @@ const TopNavbar = ({ isCollapsed, setIsCollapsed }) => {
                     </button>
                   </li>
                 </ul>
+              </div>
+            )}
+          </div>
+
+          {/* ✅ Calendar Button */}
+          <div className="relative" ref={calendarRef}>
+            <button
+              type="button"
+              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none"
+              onClick={() => setIsCalendarOpen(!isCalendarOpen)}
+            >
+              <BsCalendar size={24} />
+            </button>
+
+            {isCalendarOpen && (
+              <div className="absolute right-0 top-full mt-2 bg-white dark:bg-gray-800 p-2 shadow-lg rounded-md z-50 border border-gray-300 dark:border-gray-700">
+                <DatePicker
+                  selected={selectedDate}
+                  onChange={(date) => setSelectedDate(date)}
+                  inline
+                />
               </div>
             )}
           </div>

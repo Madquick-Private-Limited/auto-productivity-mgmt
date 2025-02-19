@@ -59,7 +59,7 @@ export const userLogin = wrapAsyncUtil(async (req, res, next) => {
         throw new ApiError(400, "Please provide email and password");
     }
 
-    const user = await User.findOne({ email }).select(
+    const user = await User.findOne({ email: email.toLowerCase() }).select(
         "password name email role status loginTimes logoutTimes workingHours refreshToken"
     );
 
